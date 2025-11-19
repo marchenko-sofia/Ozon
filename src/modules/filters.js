@@ -10,25 +10,30 @@ export const categoryFilter = (goods, value) => {
     });
 }
 
-export const priceFilter = (goods, value1 = 0, value2 = 0) => {
+export const priceFilter = (goods, min, max) => {
     return goods.filter((goodsItem) => {
-        if (value1 === 0 && value2 === 0) {
+        if (min === '' && max === '') {
             return goodsItem;
-        };
-        if (value1 === 0 && goodsItem.price <= value2) {
-            return goodsItem;
-        };
-        if (value2 === 0 && goodsItem.price >= value1) {
-            return goodsItem;
-        };
-        if (value1 > value2) {
+        } else if (min === '' && max !== '') {
+            return goodsItem.price <= +max;
+        } else if (max === '' && min !== '') {
+            return goodsItem.price >= +min;
+        } else if (+min > +max) {
             return false;
-        }
-        if (value1 === value2 && value1 != 0) {
-            return goodsItem.price === value1;
-        }
-        if (goodsItem.price >= value1 && goodsItem.price <= value2) {
-            return goodsItem;
+        } else if (min === max && min !== '') {
+            return goodsItem.price === +min;
+        } else if (min !== '' && max !== '') {
+            return goodsItem.price <= +max && goodsItem.price >= +min;
         };
+    });
+}
+
+export const hotSaleFilter = (goods, value) => {
+    return goods.filter((goodsItem) => {
+        if (value) {
+            return goodsItem.sale === true;
+        } else {
+            return goodsItem;
+        }
     });
 }
